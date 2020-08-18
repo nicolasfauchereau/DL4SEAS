@@ -1,4 +1,4 @@
-def list_files(dpath, pattern=None, extension=".nc", contain=None, excude=None, verbose=0): 
+def list_files(dpath, pattern=None, extension=".nc", include=None, exclude=None, verbose=0): 
     """
     list_files list files in a folder according to patterns
 
@@ -32,11 +32,14 @@ def list_files(dpath, pattern=None, extension=".nc", contain=None, excude=None, 
     if len(lfiles) == 0: 
         raise ValueError("No files in list")
     else: 
-        if contain is not None: 
-            lfiles = [x for x in lfiles if contain in str(x)]
+        if include is not None: 
+            lfiles = [x for x in lfiles if include in str(x)]
         if exclude is not None: 
             lfiles = [x for x in lfiles if exclude not in str(x)]
 
     lfiles.sort() 
+
+    if verbose == 1:
+        print(f"loaded files, list length {len(lfiles)}")
 
     return lfiles
