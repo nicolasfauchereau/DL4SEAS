@@ -10,9 +10,9 @@ def list_files(dpath, pattern=None, extension=".nc", include=None, exclude=None,
         The pattern to follow, by default None
     extension : str, optional
         the extension, by default ".nc"
-    contain : str, optional
+    include : str, optional
         a string that the items in the list must contain, by default None
-    excude : str, optional
+    exclude : str, optional
         a string that the items in the list must contain, by default None
     verbose : int, optional
         whether or not to output some diagnostics, by default 0
@@ -41,5 +41,7 @@ def list_files(dpath, pattern=None, extension=".nc", include=None, exclude=None,
 
     if verbose == 1:
         print(f"loaded files, list length {len(lfiles)}")
+        print(f"the first file is {str(lfiles[0]}")
+        print(f"the last file is {str(lfiles[-1])}")
 
     return lfiles
