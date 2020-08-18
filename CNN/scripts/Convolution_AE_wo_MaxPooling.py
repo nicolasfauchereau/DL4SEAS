@@ -40,9 +40,7 @@ else:
 
 print(f"\nall imports done\nwill be running using the {compute}")
 
-### defines parameters 
-
-# %% 
+# %% defines parameters for the model
 batch_size=32
 
 padd = 8
@@ -55,16 +53,13 @@ print(resize_shape)
 
 n_epochs = 20 # number of epochs 
 
-### list the files 
-
 #%% data path 
 dpath = '/media/nicolasf/END19101/data/GCMs/processed/hindcasts/CDS/ECMWF/T2M'
 
-# %%
+# %% get the list of files 
 lfiles = list_files(dpath, pattern="ECMWF_T2M_seasonal_anomalies", extension=".nc", exclude='interp')
 
-
-# %%
+# %% read the dataset, uses dask so not loading in RAM
 dset = xr.open_mfdataset(lfiles, concat_dim='time', combine='nested', parallel=True)
 
 # %% selects the training set
@@ -134,6 +129,7 @@ x = Conv2DTranspose(8, (3, 3),  strides= (2,2), padding='valid')(x)
 x = LeakyReLU()(x)
 x = Conv2DTranspose(8, (3, 3),  strides= (2,2), padding='valid')(x)
 x = LeakyReLU()(x)
+
 decoded = Conv2D(1, (3, 3), padding='same')(x)
 
 # Strip the longitude wrap-around
@@ -147,16 +143,16 @@ autoencoder = Model(original,outsize)
 # %% build the callbacks
 run_id = time.strftime("ConvAE_wo_MaxPooling_ECMWF_T2M_run_%Y_%m_%d-%H_%M_%S")
 
-# %%
+# %% check point
 checkpoint_cb = keras.callbacks.ModelCheckpoint(f"./autoencoder_checkpoint_{run_id}_{compute}_fullCNN.h5", save_best_only=True)
 
-# %%
+# %% early stopping 
 early_stopping_cb = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
 
-# %%
+# %% log directory 
 root_logdir = os.path.join(os.curdir, "LOGS")
 
-# %%
+# %% make the logging directory 
 def get_run_logdir(run_id):
     return os.path.join(root_logdir, run_id)
 
@@ -182,7 +178,7 @@ autoencoder.summary(line_length=120)
 # ### Note: run tensorboard with: 
 #         
 # ```
-# tensorboard --logdir=./my_logs  --port=6006
+# tensorboard --logdir=./LOGS  --port=6006
 # ```
 
 # %% now fit 
