@@ -41,7 +41,7 @@ def list_files(dpath, pattern=None, extension=".nc", include=None, exclude=None,
 
     if verbose == 1:
         print(f"loaded files, list length {len(lfiles)}")
-        print(f"the first file is {str(lfiles[0]}")
+        print(f"the first file is {str(lfiles[0])}")
         print(f"the last file is {str(lfiles[-1])}")
 
     return lfiles
