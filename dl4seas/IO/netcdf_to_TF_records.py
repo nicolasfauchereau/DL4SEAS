@@ -53,8 +53,8 @@ def netcdf_to_TF_records(ipath=None, file_pattern = "*.nc", length=None, selfunc
         raise ValueError(f"seems there are no files in {str(ipath)}")
         pass
     else:
-        if length is not None and length<len(lfiles):
-            lfiles=lfiles[:length]
+        if length is not None and length < len(lfiles):
+            lfiles = lfiles[:length]
         for fname in lfiles: 
             dset = xr.open_dataset(fname)
             if selfunc is not None: 
