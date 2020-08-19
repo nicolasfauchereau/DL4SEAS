@@ -36,6 +36,9 @@ def shift_time(time, shift='Month End'):
 
 
     """
+
+    import pandas as pd
+
     if shift == 'Month End':
         time = time + pd.offsets.MonthEnd(0)
     elif shift == 'Month Begin': 
