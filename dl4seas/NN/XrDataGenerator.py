@@ -5,7 +5,7 @@ from tensorflow import keras
 import tensorflow as tf 
 
 class XrDataGenerator(keras.utils.Sequence):
-    def __init__(self, Xds, Yds, X_var_dict, Y_var, norm=True, batch_size=32, shuffle=True, mean=None, std=None, load=True):
+    def __init__(self, Xds, Yds, X_var_dict, Y_var, norm=True, batch_size=32, shuffle=True, mean=None, std=None, load=True, Y_flatten=False, Y_dropna=False):
         """
         defines a Tensorflow Data Generator from xarrays datasets  
 
@@ -43,7 +43,8 @@ class XrDataGenerator(keras.utils.Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-        # sanity checks and renaming of dimensions 
+        # sanity checks and renaming of dimensions
+        
         rename_dic = {'time':'instance','latitude':'lat','longitude':'lon'}
 
         for k in rename_dic.keys(): 
@@ -53,7 +54,8 @@ class XrDataGenerator(keras.utils.Sequence):
             except:
                 pass
 
-        # build X data 
+        # build X data (the features maps dataset)
+        
         Xdata = []
         
         generic_level = xr.DataArray([1], coords={'level': [1]}, dims=['level'])
@@ -65,11 +67,27 @@ class XrDataGenerator(keras.utils.Sequence):
                 Xdata.append(Xds[var].expand_dims({'level': generic_level}, 1))
 
 
-        # build Ydata
-        if not 'level' in Yds.dims: 
-            Ydata = Yds[Y_var].expand_dims({'level': generic_level}, 1)
+        # build Ydata (the target dataset)
         
-        self.Ydata = Ydata.transpose('instance', 'lat', 'lon', 'level')
+        if not 'level' in Yds.dims: 
+            Yds = Yds[Y_var].expand_dims({'level': generic_level}, 1)
+        
+        if not 'instance' in Yds.dims:
+            Yds = Tds.rename({'time':'instance'})
+
+        if Y_flatten: 
+            
+            Yds = Yds.stack(z=('lat','lon'))
+            
+            if Y_dropna: 
+
+                Yds = Yds.dropna(dim='z')
+            
+            Self.Ydata = Yds.transpose('instance', 'z', 'level')
+        
+        else: 
+
+            self.Ydata = Ydata.transpose('instance', 'lat', 'lon', 'level')
 
         self.Xdata = xr.concat(Xdata, 'level').transpose('instance', 'lat', 'lon', 'level')
         
@@ -81,29 +99,30 @@ class XrDataGenerator(keras.utils.Sequence):
         if self.norm: 
             self.Xdata = (self.Xdata - self.mean) / self.std
         
+        # number of instances in the whole dataset 
         self.n_samples = self.Xdata.shape[0]
 
         self.on_epoch_end()
 
-        # loading 
+        # loading (optional)
         if load: 
-            print('Loading data into RAM'); 
+            print("Loading data into RAM"); 
             self.Xdata.load()
             self.Ydata.load() 
 
     def __len__(self):
-        'Denotes the number of batches per epoch'
+        "Denotes the number of batches per epoch"
         return int(np.ceil(self.n_samples / self.batch_size))
 
     def __getitem__(self, i):
-        'Generate one batch of data'
+        "Generate one batch of data according to the batch_size parameter"
         idxs = self.idxs[i * self.batch_size:(i + 1) * self.batch_size]
         X = self.Xdata.isel(instance=idxs).values
         y = self.Ydata.isel(instance=idxs).values
         return X, y
 
     def on_epoch_end(self):
-        'Updates indexes after each epoch'
+        "Updates indexes after each epoch"
         self.idxs = np.arange(self.n_samples)
         if self.shuffle == True:
             np.random.shuffle(self.idxs)
