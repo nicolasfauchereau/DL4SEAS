@@ -7,7 +7,7 @@ import tensorflow as tf
 class XrDataGenerator(keras.utils.Sequence):
     def __init__(self, Xds, Yds, X_var_dict, Y_var, norm=True, batch_size=32, shuffle=True, mean=None, std=None, load=True):
         """
-        defines a Data Generator from xarrays datasets  
+        defines a Tensorflow Data Generator from xarrays datasets  
 
         Parameters
         ----------
@@ -43,7 +43,7 @@ class XrDataGenerator(keras.utils.Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
 
-        # sanity checks 
+        # sanity checks and renaming of dimensions 
         rename_dic = {'time':'instance','latitude':'lat','longitude':'lon'}
 
         for k in rename_dic.keys(): 
@@ -77,7 +77,10 @@ class XrDataGenerator(keras.utils.Sequence):
         self.mean = self.Xdata.mean(('instance','lat', 'lon')).compute() if mean is None else mean
         self.std = self.Xdata.std(('instance','lat', 'lon')).compute() if std is None else std
         # Normalize
-        self.Xdata = (self.Xdata - self.mean) / self.std
+        
+        if self.norm: 
+            self.Xdata = (self.Xdata - self.mean) / self.std
+        
         self.n_samples = self.Xdata.shape[0]
 
         self.on_epoch_end()
