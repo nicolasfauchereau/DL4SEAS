@@ -20,7 +20,6 @@ def shift_time(time, shift='Month End'):
     -------
 
     >> dates = pd.date_range(start='1990-01-01', periods=5, freq='MS')
-    
     >> dates
 
     DatetimeIndex(['1990-01-01', '1990-02-01', '1990-03-01', '1990-04-01',
