@@ -1,6 +1,6 @@
 def shift_time(time, shift='Month End'):
     """
-    shift_time shift a time index to the beginning of the end of the month
+    shift_time shift a time index to the beginning or the end of the month
 
     [extended_summary]
 
@@ -32,9 +32,6 @@ def shift_time(time, shift='Month End'):
     DatetimeIndex(['1990-01-31', '1990-02-28', '1990-03-31', '1990-04-30',
                '1990-05-31'],
               dtype='datetime64[ns]', freq=None)
-
-
-
     """
 
     import pandas as pd
