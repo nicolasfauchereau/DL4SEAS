@@ -44,7 +44,7 @@ class XrDataGenerator(keras.utils.Sequence):
         self.shuffle = shuffle
 
         # sanity checks and renaming of dimensions
-        
+
         rename_dic = {'time':'instance','latitude':'lat','longitude':'lon'}
 
         for k in rename_dic.keys(): 
@@ -83,11 +83,11 @@ class XrDataGenerator(keras.utils.Sequence):
 
                 Yds = Yds.dropna(dim='z')
             
-            Self.Ydata = Yds.transpose('instance', 'z', 'level')
+            self.Ydata = Yds.transpose('instance', 'z', 'level')
         
         else: 
 
-            self.Ydata = Ydata.transpose('instance', 'lat', 'lon', 'level')
+            self.Ydata = Yds.transpose('instance', 'lat', 'lon', 'level')
 
         self.Xdata = xr.concat(Xdata, 'level').transpose('instance', 'lat', 'lon', 'level')
         
