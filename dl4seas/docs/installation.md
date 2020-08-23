@@ -1,2 +1,5 @@
-# installation 
+# Installation 
 
+```
+python setup.py install
+```

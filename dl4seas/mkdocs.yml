@@ -3,6 +3,11 @@ site_name: dl4seas
 # mkdocs.yml
 theme:
   name: "material"
+  palette:
+    primary: lime
+  features:
+    - instant
+    - navigation.expand
 
 plugins:
   - search
@@ -14,3 +19,9 @@ nav:
     - Code Reference:
         - utils: utils-reference.md
 
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/nfauchereau
+    - icon: fontawesome/brands/github
+      link: https://github.com/nicolasfauchereau
