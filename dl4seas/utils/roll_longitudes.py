@@ -2,15 +2,13 @@ def roll_longitudes(dset):
     """
     Roll the longitudes in a `xarray.Dataset` to go from -180 to 180 TO 0 to 360 
 
-    Arguments
-    ---------
+    Args: 
 
-    dset : xarray.Dataset, the input dataset  
+    dset (xarray.Dataset): The input dataset  
 
-    Return 
-    ------
+    Returns:
 
-    dset : xarray.Dataset, the output dataset
+    dset (xarray.Dataset): The output dataset
     """
 
     import xarray as xr

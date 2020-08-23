@@ -1,0 +1,16 @@
+site_name: dl4seas
+
+# mkdocs.yml
+theme:
+  name: "material"
+
+plugins:
+  - search
+  - mkdocstrings
+
+nav:
+    - Home: index.md
+    - Installation: installation.md
+    - Code Reference:
+        - utils: utils-reference.md
+
