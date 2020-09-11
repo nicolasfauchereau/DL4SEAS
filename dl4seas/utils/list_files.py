@@ -27,7 +27,7 @@ def list_files(dpath, pattern=None, extension=".nc", include=None, exclude=None,
     if not isinstance(dpath, pathlib.PosixPath): 
         dpath = pathlib.Path(dpath)
 
-    lfiles = list(dpath.glob(f"{pattern}*{extension}"))
+    lfiles = list(dpath.glob(f"{pattern}{extension}"))
 
     if len(lfiles) == 0: 
         raise ValueError("No files in list")
